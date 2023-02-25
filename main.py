@@ -1,3 +1,5 @@
+import csv
+import os
 import time
 import pygame
 import pymunk
@@ -10,12 +12,16 @@ from actors.net import Net
 from actors.score import Score
 from actors.wall import Wall
 from colors import WHITE, BLACK
+from controls.epsilon import EpsilonGreedy
 from controls.game_environment import GameEnvironment
 from controls.keyboard import KeyboardControls
+from controls.q_learning import QLearningControls
+from controls.reward import calculate_reward_type1
 from resources import global_variables
 from resources.collision import AGENT_COLLISION_TYPE, BALL_COLLISION_TYPE, FLOOR_COLLISION_TYPE_A, FLOOR_COLLISION_TYPE_B
 from resources.fonts import font1
 
+import tensorflow as tf
 
 # def throw_ball(ball, team=0):
 #     if not ball.active:
@@ -108,12 +114,28 @@ from resources.fonts import font1
 #
 #         pygame.display.update()
 
+draw = False
+header = ['avg', 'min', 'max', 'cumulative', 'table_size', 'epsilon', 'episode']
+
+
+def handle_global_events():
+    global draw
+    for ev in pygame.event.get():
+        if ev.type == pygame.QUIT:
+            pygame.quit()
+            return
+        if ev.type == pygame.KEYDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_TAB]:
+                draw = not draw
+
+
 def normal_game():
     controllers = [KeyboardControls(i) for i in range(1, 5)]
     game = GameEnvironment()
     while True:
-        game.actions = [control.get_action(None) for control in controllers]
         game.step()
+        game.actions = [control.get_action(None) for control in controllers]
         game.draw()
         game.draw_debug()
         pygame.display.update()
@@ -127,6 +149,53 @@ def normal_game():
                     game.ball.throw_ball(global_variables.active_team)
 
 
+def q_learning():
+    global draw
+
+    calculate_reward = calculate_reward_type1
+    stats = []
+    policy = EpsilonGreedy()
+    brain = QLearningControls(policy)
+
+    directory = 'stats/test'
+    os.makedirs(directory, exist_ok=True)
+    episode = 0
+
+    while True:
+        episode += 1
+        game = GameEnvironment()
+        step = game.get_observations()
+        actions = [0, 0, 0, 0]
+        for iteration in range(1_000_000):
+            game.ball.throw_ball(global_variables.active_team)
+            for state in step[0]:
+                actions.append(brain.get_action(state))
+            game.actions = actions
+            game.step()
+            next_step = game.get_observations()
+
+            calculate_reward(step, actions, next_step, brain)
+            brain.learn()
+            brain.epsilon_policy.decay()
+
+            step = next_step
+            actions = []
+
+            handle_global_events()
+            if draw:
+                game.draw()
+                pygame.display.update()
+
+        stats.append(brain.calculate_stats())
+        stats[-1].append(episode)
+        with open(f"{directory}/stats.csv", 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerows(stats)
+        if episode % 100 == 0:
+            brain.save(f"{directory}/brain{episode}.json")
+
+
 if __name__ == '__main__':
     # run_game_loop()
-    normal_game()
+    q_learning()

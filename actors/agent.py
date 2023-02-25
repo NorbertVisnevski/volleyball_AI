@@ -28,17 +28,23 @@ class Agent(Actor):
         self.shape = shape
         self.body = body
 
-        self.controls = KeyboardControls(player)
-
     def draw(self):
         x, y = self.get_coordinates()
         pygame.draw.rect(self.screen, RED, pygame.Rect(x - 20, y - 60, 40, 120), 1)
-        self.screen.blit(font2.render(str(self.player), True, RED), (x-6, y))
+        self.screen.blit(font2.render(str(self.player), True, RED), (x - 6, y))
 
     def get_coordinates(self):
         w, h = pygame.display.get_surface().get_size()
         point = self.body.position
         return int(point.x), int(h - point.y)
+
+    def get_normalized_coordinates(self):
+        w, h = pygame.display.get_surface().get_size()
+        point = self.body.position
+        if self.player == 1 or self.player == 2:
+            return min((point.x / (w / 2)), 1), min((point.y / (h / 3)), 1.0)
+        else:
+            return 1-min(((point.x - (w / 2)) / (w - (w / 2))), 1), min((point.y / (h / 3)), 1)
 
     def update(self, action):
         if action == 1:
@@ -46,6 +52,6 @@ class Agent(Actor):
         elif action == 2:
             self.body.apply_impulse_at_local_point((100, 0))
         elif action == 3:
-            if self.body.position.y < 91:
+            if self.body.position.y < 91 and abs(self.body.velocity.y) < 0.5:
                 self.body.apply_impulse_at_local_point((0, 10_000))
         self.body.angle = 0

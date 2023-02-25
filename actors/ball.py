@@ -20,6 +20,7 @@ class Ball(Actor):
         shape.density = 1
         shape.elasticity = 8
         shape.mass = 0.1
+        shape.filter = pymunk.ShapeFilter(BALL_COLLISION_TYPE)
         shape.collision_type = BALL_COLLISION_TYPE
         space.add(body, shape)
         self.shape = shape
@@ -59,6 +60,11 @@ class Ball(Actor):
         w, h = pygame.display.get_surface().get_size()
         point = self.body.position
         return int(point.x), int(h - point.y)
+
+    def get_normalized_coordinates(self):
+        w, h = pygame.display.get_surface().get_size()
+        point = self.body.position
+        return min((point.x / w), 1), min((point.y / h), 1)
 
     def apply_pulse(self, pulse):
         self.body.apply_impulse_at_local_point(pulse)
