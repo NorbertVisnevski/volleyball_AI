@@ -52,6 +52,7 @@ class Ball(Actor):
         pygame.draw.circle(self.screen, RED, self.get_coordinates(), 20, width=5)
 
     def update(self):
+        # print(self.body.velocity)
         if self.reset:
             self.sleep()
             self.reset = False
