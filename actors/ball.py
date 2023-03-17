@@ -67,6 +67,9 @@ class Ball(Actor):
         point = self.body.position
         return min((point.x / w), 1), min((point.y / h), 1)
 
+    def get_normalized_velocity(self):
+        return min(abs(self.body.velocity.x) / 1500, 1)
+
     def apply_pulse(self, pulse):
         self.body.apply_impulse_at_local_point(pulse)
 

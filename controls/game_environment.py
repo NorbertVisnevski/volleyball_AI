@@ -76,7 +76,7 @@ class GameEnvironment:
         ]
         self.agents = agents
 
-    def __init__(self):
+    def __init__(self, reset=True):
         self.draw_time = None
         self.update_time = None
         self.clock = None
@@ -93,8 +93,8 @@ class GameEnvironment:
         self.screen = None
         self.divider = None
         self.actions = [0, 0, 0, 0]
-
-        self.reset()
+        if reset:
+            self.reset()
 
     def get_observations_type1(self):
         a1 = self.agents[0]
@@ -196,3 +196,88 @@ class GameEnvironment:
 
             pygame.display.update()
 
+
+
+class GameEnvironmentOneSide(GameEnvironment):
+    def reset(self):
+        pygame.init()
+        pygame.display.set_caption('Game')
+
+        self.clock = pygame.time.Clock()
+
+        screen = pygame.display.set_mode((1920, 1080))
+        self.screen = screen
+        space = pymunk.Space()
+        self.space = space
+        space.gravity = 0, -981
+
+        w, h = pygame.display.get_surface().get_size()
+
+        floor = Floor(space, screen)
+        self.floor = floor
+        ceiling = Floor(space, screen, 10_000)
+        self.ceiling = ceiling
+        ball = Ball(space, screen)
+        self.ball = ball
+        net = Net(space, screen)
+        self.net = net
+        wall1 = Wall(space, screen)
+        self.wall1 = wall1
+        wall2 = Wall(space, screen, w)
+        self.wall2 = wall2
+        divider = Divider(space, screen)
+        self.divider = divider
+
+        score1 = Score(space, screen, (w / 4, h - 100), 0, 0)
+        self.score1 = score1
+        score2 = Score(space, screen, ((w / 4) * 3, h - 100), 1, 0)
+        self.score2 = score2
+
+        floor_collision1 = FloorCollision(space, screen, score2, ball, 0, FLOOR_COLLISION_TYPE_A)
+        floor_collision2 = FloorCollision(space, screen, score1, ball, w / 2, FLOOR_COLLISION_TYPE_B)
+
+        collision_handler = space.add_collision_handler(FLOOR_COLLISION_TYPE_A, BALL_COLLISION_TYPE)
+        collision_handler.begin = floor_collision1.handle_collision
+
+        collision_handler = space.add_collision_handler(FLOOR_COLLISION_TYPE_B, BALL_COLLISION_TYPE)
+        collision_handler.begin = floor_collision2.handle_collision
+
+        collision_handler = space.add_collision_handler(AGENT_COLLISION_TYPE, BALL_COLLISION_TYPE)
+        collision_handler.begin = ball.agent_reflect
+
+        collision_handler = space.add_collision_handler(BALL_COLLISION_TYPE, DIVIDER_COLLISION_TYPE)
+        collision_handler.begin = divider.handle_collision
+
+        agents = [
+            Agent(space, screen, (200, 100), 1),
+            Agent(space, screen, (400, 100), 2),
+        ]
+        self.agents = agents
+
+    def __init__(self):
+        super().__init__(reset=False)
+        self.reset()
+
+    def get_observations_type1(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+        a1_x, a1_y = a1.get_normalized_coordinates()
+        a2_x, a2_y = a2.get_normalized_coordinates()
+        b_x, b_y = self.ball.get_normalized_coordinates()
+        a1_o = [a1_x, a1_y, a2_x, a2_y, b_x, b_y]
+        a2_o = [a2_x, a2_y, a1_x, a1_y, b_x, b_y]
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
+    def get_observations_type2(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+        a1_x, a1_y = a1.get_normalized_coordinates()
+        a2_x, a2_y = a2.get_normalized_coordinates()
+        b_x, b_y = self.ball.get_normalized_coordinates()
+        b_x_v = self.ball.get_normalized_velocity()
+        a1_o = [a1_x, a1_y, a2_x, a2_y, b_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_y, a1_x, a1_y, b_x, b_y, b_x_v]
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
+    def get_observations(self):
+        return self.get_observations_type2()

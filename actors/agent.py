@@ -46,12 +46,22 @@ class Agent(Actor):
         else:
             return 1-min(((point.x - (w / 2)) / (w - (w / 2))), 1), min((point.y / (h / 3)), 1)
 
+    # def update(self, action):
+    #     if action == 1:
+    #         self.body.apply_impulse_at_local_point((-100, 0))
+    #     elif action == 2:
+    #         self.body.apply_impulse_at_local_point((100, 0))
+    #     elif action == 3:
+    #         if self.body.position.y < 91 and abs(self.body.velocity.y) < 0.5:
+    #             self.body.apply_impulse_at_local_point((0, 10_000))
+    #     self.body.angle = 0
+
     def update(self, action):
-        if action == 1:
+        if action == 0:
             self.body.apply_impulse_at_local_point((-100, 0))
-        elif action == 2:
+        elif action == 1:
             self.body.apply_impulse_at_local_point((100, 0))
-        elif action == 3:
+        elif action == 2:
             if self.body.position.y < 91 and abs(self.body.velocity.y) < 0.5:
                 self.body.apply_impulse_at_local_point((0, 10_000))
         self.body.angle = 0

@@ -17,12 +17,13 @@ class DeepQLearningHyperParameters:
     discount = 0.6
     batch_size = 128
     update_limit = 10
+    replay_memory_max_size = 512
 
 class DeepQLearningControls(Control):
 
     def __init__(self, epsilon_policy):
         self.epsilon_policy = epsilon_policy
-        self.replay_memory = deque()
+        self.replay_memory = deque(maxlen=DeepQLearningHyperParameters.replay_memory_max_size)
 
         self.model = self.build_compile_model()
         self.target_model = self.build_compile_model()
@@ -42,12 +43,7 @@ class DeepQLearningControls(Control):
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(global_variables.actions_size, activation='sigmoid'))
+        model.add(Dense(global_variables.actions_size, activation='relu'))
 
         model.compile(loss="mse", optimizer=Adam(learning_rate=DeepQLearningHyperParameters.learning_rate), metrics=['accuracy'])
         return model

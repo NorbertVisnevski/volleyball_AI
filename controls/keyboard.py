@@ -6,49 +6,49 @@ from controls.control import Control
 def mapping1():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-        return 3
-    elif keys[pygame.K_a]:
-        return 1
-    elif keys[pygame.K_d]:
         return 2
-    else:
+    elif keys[pygame.K_a]:
         return 0
+    elif keys[pygame.K_d]:
+        return 1
+    else:
+        return 99
 
 
 def mapping2():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_i]:
-        return 3
-    elif keys[pygame.K_j]:
-        return 1
-    elif keys[pygame.K_l]:
         return 2
-    else:
+    elif keys[pygame.K_j]:
         return 0
+    elif keys[pygame.K_l]:
+        return 1
+    else:
+        return 99
 
 
 def mapping3():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
-        return 3
+        return 2
     elif keys[pygame.K_LEFT]:
         return 1
     elif keys[pygame.K_RIGHT]:
-        return 2
-    else:
         return 0
+    else:
+        return 99
 
 
 def mapping4():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_KP8]:
-        return 3
-    elif keys[pygame.K_KP4]:
-        return 1
-    elif keys[pygame.K_KP6]:
         return 2
-    else:
+    elif keys[pygame.K_KP4]:
         return 0
+    elif keys[pygame.K_KP6]:
+        return 1
+    else:
+        return 99
 
 
 class KeyboardControls(Control):
