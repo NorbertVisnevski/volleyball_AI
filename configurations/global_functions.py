@@ -1,6 +1,6 @@
 import pygame
 
-header = ['avg', 'min', 'max', 'cumulative', 'table_size', 'epsilon', 'episode']
+header = ['avg', 'min', 'max', 'cumulative', 'table_size', 'epsilon', 'score1', 'score2', 'episode']
 
 
 class GlobalFunctions:

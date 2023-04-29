@@ -67,6 +67,14 @@ class Ball(Actor):
         point = self.body.position
         return min((point.x / w), 1), min((point.y / h), 1)
 
+    def get_normalized_coordinates_by_team(self):
+        w, h = pygame.display.get_surface().get_size()
+        point = self.body.position
+        t1_x = min((point.x / (w / 2)), 1)
+        t2_x = min(((w - point.x) / (w / 2)), 1)
+        y = min((point.y / h), 1)
+        return t1_x, t2_x, y
+
     def get_normalized_velocity(self):
         return min(abs(self.body.velocity.x) / 1500, 1)
 
@@ -108,6 +116,7 @@ class Ball(Actor):
             self.activate()
             self.body.velocity = (0, 0)
             pulse = random.choice(self.throw_presets)
+            # pulse = self.throw_presets[0]
             if team == 0:
                 self.body.position = (40, 500)
                 self.apply_pulse(pulse)

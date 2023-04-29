@@ -147,7 +147,7 @@ class GameEnvironment:
 
     def draw(self):
         start_time = time.time()
-        self.screen.fill(BLACK)
+        self.screen.fill(WHITE)
         self.net.draw()
         self.floor.draw()
         for agent in self.agents:
@@ -161,9 +161,9 @@ class GameEnvironment:
         self.draw_time = end_time - start_time
 
     def draw_debug(self):
-        self.screen.blit(font1.render(f"Update time:  {round(self.update_time * 1000, 2)}", True, WHITE), (5, 10))
-        self.screen.blit(font1.render(f"Draw time:  {round(self.draw_time * 1000, 2)}", True, WHITE), (5, 30))
-        self.screen.blit(font1.render(f"Frame time:  {round((self.update_time + self.draw_time) * 1000, 2)}", True, WHITE), (5, 50))
+        self.screen.blit(font1.render(f"Update time:  {round(self.update_time * 1000, 2)}", True, BLACK), (5, 10))
+        self.screen.blit(font1.render(f"Draw time:  {round(self.draw_time * 1000, 2)}", True, BLACK), (5, 30))
+        self.screen.blit(font1.render(f"Frame time:  {round((self.update_time + self.draw_time) * 1000, 2)}", True, BLACK), (5, 50))
 
     def run_normal_gameplay(self):
         run = True
@@ -279,5 +279,46 @@ class GameEnvironmentOneSide(GameEnvironment):
         a2_o = [a2_x, a2_y, a1_x, a1_y, b_x, b_y, b_x_v]
         return [[a1_o, a2_o], self.score1.score, self.score2.score]
 
+    def get_observations_type3(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+        a1_x, a1_y = a1.get_normalized_coordinates()
+        a2_x, a2_y = a2.get_normalized_coordinates()
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x_v = self.ball.get_normalized_velocity()
+        a1_o = [a1_x, a1_y, a2_x, a2_y, bt1_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_y, a1_x, a1_y, bt1_x, b_y, b_x_v]
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
+    def get_observations_type4(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x_v = self.ball.get_normalized_velocity()
+
+        a1_o = [a1_x, a1_y, a1_j, a2_x, a2_y, bt1_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_y, a2_j, a1_x, a1_y, bt1_x, b_y, b_x_v]
+
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
+    def get_observations_type5(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        b_x, b_y = self.ball.get_normalized_coordinates()
+        b_x_v = self.ball.get_normalized_velocity()
+
+        a1_o = [a1_x, a1_j, a2_x, b_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_j, a1_x, b_x, b_y, b_x_v]
+
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
     def get_observations(self):
-        return self.get_observations_type2()
+        return self.get_observations_type5()

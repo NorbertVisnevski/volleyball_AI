@@ -2,7 +2,7 @@ import pygame
 import pymunk
 
 from actors.actor import Actor
-from colors import WHITE
+from colors import WHITE, BLACK
 
 
 class Net(Actor):
@@ -22,7 +22,7 @@ class Net(Actor):
     def draw(self):
         w, h = pygame.display.get_surface().get_size()
         a, b = self.get_coordinates()
-        pygame.draw.line(self.screen, WHITE, a, b, 2)
+        pygame.draw.line(self.screen, BLACK, a, b, 2)
 
     def get_coordinates(self):
         a = self.segment.a

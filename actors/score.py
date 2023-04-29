@@ -1,7 +1,7 @@
 import pygame
 
 from actors.actor import Actor
-from colors import WHITE, RED
+from colors import WHITE, RED, BLACK
 from resources import global_variables
 from resources.fonts import font4
 
@@ -16,7 +16,7 @@ class Score(Actor):
         self.team = team
 
     def draw(self):
-        self.screen.blit(font4.render(str(self.score), True, WHITE), self.get_coordinates())
+        self.screen.blit(font4.render(str(self.score), True, BLACK), self.get_coordinates())
         if self.team == global_variables.active_team:
             x, y = self.get_coordinates()
             pygame.draw.circle(self.screen, RED, (x - 32, y + 42), 12)

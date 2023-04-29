@@ -9,9 +9,9 @@ from resources import global_variables
 
 
 class QLearningHyperParameters:
-    learning_rate = 0.2
+    learning_rate = 0.0002
     inverse_alpha = 1 - learning_rate
-    discount = 0.6
+    discount = 0.5
 
 
 class QLearningControls(Control):

@@ -41,10 +41,14 @@ class Agent(Actor):
     def get_normalized_coordinates(self):
         w, h = pygame.display.get_surface().get_size()
         point = self.body.position
+        has_jumped = 0 if self.can_jumped() else 1
         if self.player == 1 or self.player == 2:
-            return min((point.x / (w / 2)), 1), min((point.y / (h / 3)), 1.0)
+            return min((point.x / (w / 2)), 1), min((point.y / (h / 3)), 1.0), has_jumped
         else:
-            return 1-min(((point.x - (w / 2)) / (w - (w / 2))), 1), min((point.y / (h / 3)), 1)
+            return 1-min(((point.x - (w / 2)) / (w - (w / 2))), 1), min((point.y / (h / 3)), 1), has_jumped
+
+    def can_jumped(self):
+        return self.body.position.y < 91 and abs(self.body.velocity.y) < 0.5
 
     # def update(self, action):
     #     if action == 1:
@@ -62,6 +66,6 @@ class Agent(Actor):
         elif action == 1:
             self.body.apply_impulse_at_local_point((100, 0))
         elif action == 2:
-            if self.body.position.y < 91 and abs(self.body.velocity.y) < 0.5:
+            if self.can_jumped():
                 self.body.apply_impulse_at_local_point((0, 10_000))
         self.body.angle = 0
