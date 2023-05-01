@@ -87,7 +87,7 @@ def calculate_reward_1side_type5(step, actions, next_step, ai):
         action = actions[i]
         reward = None
         final = None
-        if state[3] > next_state[3]:
+        if state[3] < next_state[3]:
             reward = 1
         if step[1] < next_step[1]:
             reward = 100
