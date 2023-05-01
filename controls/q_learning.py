@@ -9,9 +9,10 @@ from resources import global_variables
 
 
 class QLearningHyperParameters:
-    learning_rate = 0.0002
+
+    learning_rate = 0.00002
     inverse_alpha = 1 - learning_rate
-    discount = 0.5
+    discount = 0.7
 
 
 class QLearningControls(Control):
@@ -19,7 +20,7 @@ class QLearningControls(Control):
     def __init__(self, epsilon_policy):
         self.Q_Table = {}
         self.replay_memory = deque()
-        self.rewards = list()
+        self.rewards = deque()
         self.epsilon_policy = epsilon_policy
 
     def state_to_key(self, state):

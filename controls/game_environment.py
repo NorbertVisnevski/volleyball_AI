@@ -128,8 +128,32 @@ class GameEnvironment:
         a4_o = [a4_x, a3_x, 1-b_x, b_y]
         return [[a1_o, a2_o, a3_o, a4_o], self.score1.score, self.score2.score]
 
+    def get_observations_type6(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a3 = self.agents[2]
+        a4 = self.agents[3]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        a3_x, a3_y, a3_j = a3.get_normalized_coordinates()
+        a4_x, a4_y, a4_j = a4.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x_v = self.ball.get_normalized_velocity()
+
+        a1_o = [a1_x, a1_j, a2_x, bt1_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_j, a1_x, bt1_x, b_y, b_x_v]
+
+        a3_o = [a3_x, a3_j, a4_x, bt2_x, b_y, b_x_v]
+        a4_o = [a4_x, a4_j, a3_x, bt2_x, b_y, b_x_v]
+
+        return [[a1_o, a2_o, a3_o, a4_o], self.score1.score, self.score2.score]
+
     def get_observations(self):
-        return self.get_observations_type2()
+        return self.get_observations_type6()
 
     def set_actions(self, actions):
         self.actions = actions
@@ -320,5 +344,20 @@ class GameEnvironmentOneSide(GameEnvironment):
 
         return [[a1_o, a2_o], self.score1.score, self.score2.score]
 
+    def get_observations_type6(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x_v = self.ball.get_normalized_velocity()
+
+        a1_o = [a1_x, a1_j, a2_x, bt1_x, b_y, b_x_v]
+        a2_o = [a2_x, a2_j, a1_x, bt1_x, b_y, b_x_v]
+
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
     def get_observations(self):
-        return self.get_observations_type5()
+        return self.get_observations_type6()

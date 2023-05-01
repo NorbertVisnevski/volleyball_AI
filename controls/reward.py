@@ -129,3 +129,22 @@ def calculate_reward_1side_type8(step, actions, next_step, ai):
         if step[2] < next_step[2]:
             reward = -100
         ai.store(state, action, reward or 0, next_state, final)
+
+def calculate_reward_type8(step, actions, next_step, ai):
+    for i in range(len(step[0])):
+        state = step[0][i]
+        next_state = next_step[0][i]
+        action = actions[i]
+        reward = None
+        final = None
+        if i < 2:
+            if step[1] < next_step[1]:
+                reward = 100
+            if step[2] < next_step[2]:
+                reward = -100
+        else:
+            if step[1] < next_step[1]:
+                reward = -100
+            if step[2] < next_step[2]:
+                reward = 100
+        ai.store(state, action, reward or 0, next_state, final)

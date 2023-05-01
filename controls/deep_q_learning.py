@@ -12,9 +12,9 @@ from resources import global_variables
 
 
 class DeepQLearningHyperParameters:
-    learning_rate = 0.001
+    learning_rate = 0.00002
     inverse_alpha = 1 - learning_rate
-    discount = 0.6
+    discount = 0.7
     batch_size = 128
     update_limit = 10
     replay_memory_max_size = 512
@@ -32,17 +32,16 @@ class DeepQLearningControls(Control):
 
         self.target_update_counter = 0
 
-    def store(self, state, action, reward, next_state):
+    def store(self, state, action, reward, next_state, final=None):
         self.replay_memory.append((state, action, reward, next_state))
         self.rewards.append(reward)
 
     def build_compile_model(self):
         model = Sequential()
-        model.add(Dense(32, input_shape=[global_variables.observations_size], activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
+        model.add(Dense(8, input_shape=[global_variables.observations_size], activation='relu'))
+        model.add(Dense(8, activation='relu'))
+        model.add(Dense(8, activation='relu'))
+        model.add(Dense(8, activation='relu'))
         model.add(Dense(global_variables.actions_size, activation='relu'))
 
         model.compile(loss="mse", optimizer=Adam(learning_rate=DeepQLearningHyperParameters.learning_rate), metrics=['accuracy'])
