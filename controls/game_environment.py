@@ -359,5 +359,20 @@ class GameEnvironmentOneSide(GameEnvironment):
 
         return [[a1_o, a2_o], self.score1.score, self.score2.score]
 
+    def get_observations_type7(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x, b_y = self.ball.get_normalized_coordinates()
+
+        a1_o = [a1_x, a1_j, a2_x, bt1_x, b_x, b_y]
+        a2_o = [a2_x, a2_j, a1_x, bt1_x, b_x, b_y]
+
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
     def get_observations(self):
         return self.get_observations_type6()

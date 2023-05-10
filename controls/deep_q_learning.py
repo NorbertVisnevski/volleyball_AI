@@ -17,7 +17,7 @@ class DeepQLearningHyperParameters:
     discount = 0.7
     batch_size = 128
     update_limit = 10
-    replay_memory_max_size = 512
+    replay_memory_max_size = 512*8
 
 class DeepQLearningControls(Control):
 
@@ -28,7 +28,7 @@ class DeepQLearningControls(Control):
         self.model = self.build_compile_model()
         self.target_model = self.build_compile_model()
         self.align_target_model()
-        self.rewards = list()
+        self.rewards = deque()
 
         self.target_update_counter = 0
 
@@ -41,8 +41,7 @@ class DeepQLearningControls(Control):
         model.add(Dense(8, input_shape=[global_variables.observations_size], activation='relu'))
         model.add(Dense(8, activation='relu'))
         model.add(Dense(8, activation='relu'))
-        model.add(Dense(8, activation='relu'))
-        model.add(Dense(global_variables.actions_size, activation='relu'))
+        model.add(Dense(global_variables.actions_size, activation='sigmoid'))
 
         model.compile(loss="mse", optimizer=Adam(learning_rate=DeepQLearningHyperParameters.learning_rate), metrics=['accuracy'])
         return model
@@ -82,7 +81,13 @@ class DeepQLearningControls(Control):
             X.append(current_state)
             y.append(current_qs)
 
-        self.model.fit(np.array(X), np.array(y), epochs=1, batch_size=DeepQLearningHyperParameters.batch_size,  verbose=0, shuffle=False)
+        self.model.fit(
+            np.array(X),
+            np.array(y),
+            # epochs=1,
+            # batch_size=DeepQLearningHyperParameters.batch_size,
+            verbose=0,
+            shuffle=False)
 
         self.target_update_counter += 1
 

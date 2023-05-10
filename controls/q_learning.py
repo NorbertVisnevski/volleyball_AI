@@ -9,7 +9,6 @@ from resources import global_variables
 
 
 class QLearningHyperParameters:
-
     learning_rate = 0.00002
     inverse_alpha = 1 - learning_rate
     discount = 0.7
@@ -67,8 +66,11 @@ class QLearningControls(Control):
 
     def save(self, directory):
         serialized = json.dumps(self.Q_Table, indent=2)
-        with open(f"{directory}", "w") as f:
-            f.write(serialized)
+        try:
+            with open(f"{directory}", "w") as f:
+                f.write(serialized)
+        except:
+            pass
 
     def load(self, directory):
         with open(f"{directory}", "r") as f:
