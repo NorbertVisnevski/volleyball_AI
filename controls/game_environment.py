@@ -25,11 +25,11 @@ class GameEnvironment:
 
         self.clock = pygame.time.Clock()
 
-        screen = pygame.display.set_mode((1920, 1080))
+        screen = pygame.display.set_mode((1800, 1000))
         self.screen = screen
         space = pymunk.Space()
         self.space = space
-        space.gravity = 0, -981
+        space.gravity = 0, -800
 
         w, h = pygame.display.get_surface().get_size()
 
@@ -124,8 +124,8 @@ class GameEnvironment:
         b_x, b_y = self.ball.get_normalized_coordinates()
         a1_o = [a1_x, a2_x, b_x, b_y]
         a2_o = [a2_x, a1_x, b_x, b_y]
-        a3_o = [a3_x, a4_x, 1-b_x, b_y]
-        a4_o = [a4_x, a3_x, 1-b_x, b_y]
+        a3_o = [a3_x, a4_x, 2-b_x, b_y]
+        a4_o = [a4_x, a3_x, 2-b_x, b_y]
         return [[a1_o, a2_o, a3_o, a4_o], self.score1.score, self.score2.score]
 
     def get_observations_type6(self):
@@ -152,8 +152,33 @@ class GameEnvironment:
 
         return [[a1_o, a2_o, a3_o, a4_o], self.score1.score, self.score2.score]
 
+    def get_observations_type8(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a3 = self.agents[2]
+        a4 = self.agents[3]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        a3_x, a3_y, a3_j = a3.get_normalized_coordinates()
+        a4_x, a4_y, a4_j = a4.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x_v = self.ball.get_normalized_velocity()
+        b_x, b_y = self.ball.get_normalized_coordinates()
+
+        a1_o = [a1_x, b_x]
+        a2_o = [a2_x, b_x]
+
+        a3_o = [a3_x, 2-b_x]
+        a4_o = [a4_x, 2-b_x]
+
+        return [[a1_o, a2_o, a3_o, a4_o], self.score1.score, self.score2.score]
+
     def get_observations(self):
-        return self.get_observations_type6()
+        return self.get_observations_type8()
 
     def set_actions(self, actions):
         self.actions = actions
@@ -164,7 +189,7 @@ class GameEnvironment:
         for i, agent in enumerate(self.agents):
             agent.update(self.actions[i])
         self.ball.update()
-        self.space.step(1 / 120)
+        self.space.step(1 / 360)
 
         end_time = time.time()
         self.update_time = end_time - start_time
@@ -229,11 +254,11 @@ class GameEnvironmentOneSide(GameEnvironment):
 
         self.clock = pygame.time.Clock()
 
-        screen = pygame.display.set_mode((1920, 1080))
+        screen = pygame.display.set_mode((1800, 1000))
         self.screen = screen
         space = pymunk.Space()
         self.space = space
-        space.gravity = 0, -981
+        space.gravity = 0, -800
 
         w, h = pygame.display.get_surface().get_size()
 
@@ -368,11 +393,28 @@ class GameEnvironmentOneSide(GameEnvironment):
 
         bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
         b_x, b_y = self.ball.get_normalized_coordinates()
+        b_v = self.ball.get_normalized_velocity()
 
-        a1_o = [a1_x, a1_j, a2_x, bt1_x, b_x, b_y]
-        a2_o = [a2_x, a2_j, a1_x, bt1_x, b_x, b_y]
+        a1_o = [a1_x, a2_x, b_x, b_y, b_v]
+        a2_o = [a2_x, a1_x, b_x, b_y, b_v]
+
+        return [[a1_o, a2_o], self.score1.score, self.score2.score]
+
+    def get_observations_type8(self):
+        a1 = self.agents[0]
+        a2 = self.agents[1]
+
+        a1_x, a1_y, a1_j = a1.get_normalized_coordinates()
+        a2_x, a2_y, a2_j = a2.get_normalized_coordinates()
+
+        bt1_x, bt2_x, b_y = self.ball.get_normalized_coordinates_by_team()
+        b_x, b_y = self.ball.get_normalized_coordinates()
+        b_v = self.ball.get_normalized_velocity()
+
+        a1_o = [a1_x, b_x, a2_x]
+        a2_o = [a2_x, b_x, a1_x]
 
         return [[a1_o, a2_o], self.score1.score, self.score2.score]
 
     def get_observations(self):
-        return self.get_observations_type6()
+        return self.get_observations_type8()

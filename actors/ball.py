@@ -5,7 +5,9 @@ import pymunk
 
 from actors.actor import Actor
 from colors import RED
+from resources import global_variables
 from resources.collision import BALL_COLLISION_TYPE
+from resources.global_state import global_state
 
 
 class Ball(Actor):
@@ -16,7 +18,7 @@ class Ball(Actor):
 
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         body.position = position
-        shape = pymunk.Circle(body, 20)
+        shape = pymunk.Circle(body, 35)
         shape.density = 1
         shape.elasticity = 8
         shape.mass = 0.1
@@ -26,30 +28,24 @@ class Ball(Actor):
         self.shape = shape
         self.body = body
 
-        self.reflect_y = 600
-        self.reflect_x = 500
+        self.reflect_y = 700
+        self.reflect_x = 700
         self.sleep()
         self.reset = False
         self.active = False
         self.throw_presets = [
-            (50, 100),
-            (100, 50),
-            (150, 20),
-            (90, 60),
-            (60, 90),
-            (80, 80),
-            (90, 40),
+            (50, 80),
+            (80, 50),
+            (80, 60),
+            (60, 80),
             (75, 75)
         ]
         self.reflect_presets = [
-            (500, 600),
-            (600, 500),
-            (600, 400),
-            (400, 600),
+            (600, 600)
         ]
 
     def draw(self):
-        pygame.draw.circle(self.screen, RED, self.get_coordinates(), 20, width=5)
+        pygame.draw.circle(self.screen, RED, self.get_coordinates(), 35, width=5)
 
     def update(self):
         # print(self.body.velocity)
@@ -65,7 +61,7 @@ class Ball(Actor):
     def get_normalized_coordinates(self):
         w, h = pygame.display.get_surface().get_size()
         point = self.body.position
-        return min((point.x / w), 1), min((point.y / h), 1)
+        return min((point.x / (w / 2)), 2), min((point.y / h), 1)
 
     def get_normalized_coordinates_by_team(self):
         w, h = pygame.display.get_surface().get_size()
@@ -100,6 +96,7 @@ class Ball(Actor):
             x = -reflect_x + additional_x
 
         self.body.velocity = (x, y)
+        global_state.reflected = True
         return True
 
     def sleep(self):
@@ -116,11 +113,10 @@ class Ball(Actor):
             self.activate()
             self.body.velocity = (0, 0)
             pulse = random.choice(self.throw_presets)
-            # pulse = self.throw_presets[0]
             if team == 0:
-                self.body.position = (40, 500)
+                self.body.position = (40, 600)
                 self.apply_pulse(pulse)
             else:
                 w, h = pygame.display.get_surface().get_size()
-                self.body.position = (w - 40, 500)
+                self.body.position = (w - 40, 600)
                 self.apply_pulse((-pulse[0], pulse[1]))

@@ -9,9 +9,9 @@ from resources import global_variables
 
 
 class QLearningHyperParameters:
-    learning_rate = 0.00002
+    learning_rate = 0.0002
     inverse_alpha = 1 - learning_rate
-    discount = 0.7
+    discount = 0.5
 
 
 class QLearningControls(Control):
@@ -23,10 +23,10 @@ class QLearningControls(Control):
         self.epsilon_policy = epsilon_policy
 
     def state_to_key(self, state):
-        for i in range(len(state) - 2):
+        for i in range(len(state)):
             state[i] = round(state[i], 1)
-        state[-1] = round(state[-1], 2)
-        state[-2] = round(state[-2], 2)
+        # state[-1] = round(state[-1], 1)
+        # state[-2] = round(state[-2], 1)
         return '|'.join([str(float(elem)) for i, elem in enumerate(state)])
 
     def get_action(self, state):
