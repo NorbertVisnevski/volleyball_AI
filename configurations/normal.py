@@ -12,7 +12,7 @@ def normal_game():
         game.step()
         game.actions = [control.get_action(None) for control in controllers]
         game.draw()
-        game.draw_debug()
+        # game.draw_debug()
         pygame.display.update()
         for ev in pygame.event.get():
             if ev.type == pygame.QUIT:

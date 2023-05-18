@@ -16,7 +16,7 @@ class Ball(Actor):
 
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         body.position = position
-        shape = pymunk.Circle(body, 20)
+        shape = pymunk.Circle(body, 29)
         shape.density = 1
         shape.elasticity = 8
         shape.mass = 0.1
@@ -44,12 +44,10 @@ class Ball(Actor):
         self.reflect_presets = [
             (500, 600),
             (600, 500),
-            (600, 400),
-            (400, 600),
         ]
 
     def draw(self):
-        pygame.draw.circle(self.screen, RED, self.get_coordinates(), 20, width=5)
+        pygame.draw.circle(self.screen, RED, self.get_coordinates(), 28, width=5)
 
     def update(self):
         # print(self.body.velocity)
@@ -65,7 +63,7 @@ class Ball(Actor):
     def get_normalized_coordinates(self):
         w, h = pygame.display.get_surface().get_size()
         point = self.body.position
-        return min((point.x / w), 1), min((point.y / h), 1)
+        return min((point.x / (w / 2)), 2), min((point.y / h), 1)
 
     def get_normalized_coordinates_by_team(self):
         w, h = pygame.display.get_surface().get_size()

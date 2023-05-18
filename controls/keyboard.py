@@ -44,9 +44,9 @@ def mapping4():
     if keys[pygame.K_KP8]:
         return 2
     elif keys[pygame.K_KP4]:
-        return 0
-    elif keys[pygame.K_KP6]:
         return 1
+    elif keys[pygame.K_KP6]:
+        return 0
     else:
         return 99
 

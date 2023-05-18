@@ -17,7 +17,7 @@ class Agent(Actor):
 
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         body.position = position
-        shape = pymunk.Poly.create_box(body, (40, 120))
+        shape = pymunk.Poly.create_box(body, (60, 120))
         shape.density = 1
         shape.friction = 0.1
         shape.elasticity = 0.01
@@ -30,7 +30,7 @@ class Agent(Actor):
 
     def draw(self):
         x, y = self.get_coordinates()
-        pygame.draw.rect(self.screen, RED, pygame.Rect(x - 20, y - 60, 40, 120), 1)
+        pygame.draw.rect(self.screen, RED, pygame.Rect(x - 25, y - 60, 50, 120), 1)
         self.screen.blit(font2.render(str(self.player), True, RED), (x - 6, y))
 
     def get_coordinates(self):
@@ -61,11 +61,20 @@ class Agent(Actor):
     #     self.body.angle = 0
 
     def update(self, action):
-        if action == 0:
-            self.body.apply_impulse_at_local_point((-100, 0))
-        elif action == 1:
-            self.body.apply_impulse_at_local_point((100, 0))
-        elif action == 2:
-            if self.can_jumped():
-                self.body.apply_impulse_at_local_point((0, 10_000))
+        if self.player < 3:
+            if action == 0:
+                self.body.apply_impulse_at_local_point((-100, 0))
+            elif action == 1:
+                self.body.apply_impulse_at_local_point((100, 0))
+            elif action == 2:
+                if self.can_jumped():
+                    self.body.apply_impulse_at_local_point((0, 10_000))
+        else:
+            if action == 0:
+                self.body.apply_impulse_at_local_point((100, 0))
+            elif action == 1:
+                self.body.apply_impulse_at_local_point((-100, 0))
+            elif action == 2:
+                if self.can_jumped():
+                    self.body.apply_impulse_at_local_point((0, 10_000))
         self.body.angle = 0
