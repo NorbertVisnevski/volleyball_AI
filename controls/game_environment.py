@@ -411,8 +411,8 @@ class GameEnvironmentOneSide(GameEnvironment):
         b_x, b_y = self.ball.get_normalized_coordinates()
         b_v = self.ball.get_normalized_velocity()
 
-        a1_o = [a1_x, b_x, a2_x]
-        a2_o = [a2_x, b_x, a1_x]
+        a1_o = [a1_x, b_x]
+        a2_o = [a2_x, b_x]
 
         return [[a1_o, a2_o], self.score1.score, self.score2.score]
 
