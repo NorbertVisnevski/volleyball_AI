@@ -139,11 +139,10 @@ def q_learning_1side_3():
     stats = []
     policy = EpsilonGreedy(0.1)
     brain = QLearningControls2(policy)
-    brain.load('stats/q-1side-1-reward5-0.5M-team-ball-increasing/brain3900.json')
 
     directory = 'stats/q-1side-1-reward5-0.5M-team-ball-increasing'
     os.makedirs(directory, exist_ok=True)
-    episode = 3900
+    episode = 0
     for k in range(len(throw_presets)):
         policy.reset()
         for j in range(1000):
@@ -181,7 +180,7 @@ def q_learning_1side_3():
             if episode % 100 == 0:
                 brain.save(f"{directory}/brain{episode}.json")
 
-def q_learning_1side_4():
+def q_learning_1side_4(epsilon):
     throw_presets = [
         (50, 100),
         (100, 50),
@@ -198,10 +197,10 @@ def q_learning_1side_4():
     calculate_reward = calculate_reward_1side_type5
     stats = []
     policy = EpsilonGreedy(0.1)
-    policy.epsilon = 0.2
+    policy.epsilon = epsilon
     brain = QLearningControls2(policy)
 
-    directory = 'stats/q-1side-1-reward5-0.5M-team-ball-static-E-0.2'
+    directory = f"stats/q-1side-1-reward5-0.5M-team-ball-static-E-{epsilon}"
     os.makedirs(directory, exist_ok=True)
     episode = 0
     for k in range(len(throw_presets)):
@@ -212,7 +211,7 @@ def q_learning_1side_4():
             # game.ball.throw_presets = throw_presets[0:k+1]
             step = game.get_observations()
             actions = [0, 0]
-            for iteration in range(50_000):
+            for iteration in range(350_000):
                 game.ball.throw_ball(1)
                 for state in step[0]:
                     actions.append(brain.get_action(state))
@@ -241,7 +240,7 @@ def q_learning_1side_4():
             if episode % 100 == 0:
                 brain.save(f"{directory}/brain{episode}.json")
 
-def q_learning_1side_5():
+def q_learning_1side_5(epsilon):
     throw_presets = [
         (50, 100),
         (100, 50),
@@ -258,10 +257,10 @@ def q_learning_1side_5():
     calculate_reward = calculate_reward_1side_type5
     stats = []
     policy = EpsilonGreedy(0.1)
-    policy.epsilon = 0.2
+    policy.epsilon = epsilon
     brain = QLearningControls2(policy)
 
-    directory = 'stats/q-1side-1-reward5-0.5M-team-ball-increasing-E-0.2'
+    directory = f"stats/q-1side-1-reward5-0.5M-team-ball-increasing-E-{epsilon}"
     os.makedirs(directory, exist_ok=True)
     episode = 0
     for k in range(len(throw_presets)):
@@ -272,7 +271,7 @@ def q_learning_1side_5():
             game.ball.throw_presets = throw_presets[0:k+1]
             step = game.get_observations()
             actions = [0, 0]
-            for iteration in range(50_000):
+            for iteration in range(350_000):
                 game.ball.throw_ball(1)
                 for state in step[0]:
                     actions.append(brain.get_action(state))
@@ -522,7 +521,7 @@ def q_learning_1side_7():
             # game.ball.throw_presets = throw_presets[0:k+1]
             step = game.get_observations()
             actions = [0, 0]
-            for iteration in range(50_000):
+            for iteration in range(350_000):
                 game.ball.throw_ball(1)
                 for state in step[0]:
                     actions.append(brain.get_action(state))
@@ -583,7 +582,7 @@ def q_learning_1side_8():
             game.ball.throw_presets = throw_presets[0:k+1]
             step = game.get_observations()
             actions = [0, 0]
-            for iteration in range(50_000):
+            for iteration in range(350_000):
                 game.ball.throw_ball(1)
                 for state in step[0]:
                     actions.append(brain.get_action(state))

@@ -164,7 +164,7 @@ class GameEnvironment:
         for i, agent in enumerate(self.agents):
             agent.update(self.actions[i])
         self.ball.update()
-        self.space.step(1 / 120)
+        self.space.step(1 / 240)
 
         end_time = time.time()
         self.update_time = end_time - start_time
